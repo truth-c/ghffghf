@@ -40,8 +40,8 @@ def make(name, max_cols, max_rows):
 
     for s in range(sheets):
         ids = list(range(s * per, min(total, (s + 1) * per)))
-        cols = min(max_cols, len(ids))
-        rows = math.ceil(len(ids) / cols)
+        rows = math.ceil(len(ids) / min(max_cols, len(ids)))
+        cols = math.ceil(len(ids) / rows)  # 빈 칸이 적게 (예: 9장은 4x3 대신 3x3)
         sheet = Image.new("RGB", (cols * w, rows * ch), "white")
         draw = ImageDraw.Draw(sheet)
         for i, k in enumerate(ids):
