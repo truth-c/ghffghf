@@ -53,6 +53,8 @@ def slice_sheet(layout_path, result_path):
         c, r = i % layout["cols"], i // layout["cols"]
         box = (xs[c] + (MARGIN if c else 0), ys[r] + (MARGIN if r else 0),
                xs[c + 1] - (MARGIN if c + 1 < layout["cols"] else 0), ys[r + 1] - (MARGIN if r + 1 < layout["rows"] else 0))
+        # 바깥 줄/칸은 이미지 끝까지 늘어나 있을 수 있어 칸 크기만큼만 정사각형으로 자름
+        box = (box[0], box[1], min(box[2], round(xs[c] + xstep)), min(box[3], round(ys[r] + ystep)))
         part = img.crop(box)
         part = part.resize((round(part.width * scale), round(part.height * scale)), Image.LANCZOS)
         cell = Image.new("RGB", size, "white")
