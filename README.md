@@ -23,4 +23,6 @@
    ```
 3. 결과: `output/<이름>_elyn.gif` (원본과 같은 순서·타이밍·반복)
 
+캐릭터 시트와 AI 생성 프롬프트는 [ELYN.md](ELYN.md). AI 입력 이미지(레퍼런스+원본 프레임)는 `python3 tools/make_ai_input.py` 로 생성.
+
 프레임을 다시 뽑으려면 `python3 tools/extract.py` (필요: `pip install pillow`).
