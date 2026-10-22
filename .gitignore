@@ -2,3 +2,4 @@ output/
 __pycache__/
 frames/*/ai_input/
 deliver/
+sheets/
