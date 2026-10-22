@@ -36,7 +36,8 @@ def make(name, max_cols, max_rows):
     out = ROOT / "sheets"
     out.mkdir(exist_ok=True)
     for old in out.glob(f"{name}_*"):
-        old.unlink()
+        if old.stem.split("_")[-1].isdigit():  # 이전 번호 시트만 지움 (_all 등은 유지)
+            old.unlink()
 
     for s in range(sheets):
         ids = list(range(s * per, min(total, (s + 1) * per)))
