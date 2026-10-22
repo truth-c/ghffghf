@@ -46,19 +46,20 @@ def slice_sheet(layout_path, result_path):
     is_line = (gray > 150) & (gray < 225)
     xs, xstep = find_lines(is_line.mean(0), layout["cols"], img.width)
     ys, ystep = find_lines(is_line.mean(1), layout["rows"], img.height)
-    scale = size[0] / ((xstep + ystep) / 2)  # 모든 칸에 같은 배율 (비율 유지)
+    scale = size[0] / xstep  # 모든 칸에 같은 배율 (비율 유지)
+    cell_h = xstep * size[1] / size[0]  # 그림 부분 높이 (아래 번호 띠는 버림)
     print("세로선", xs, "가로선", ys)
 
     for i, k in enumerate(layout["frames"]):
         c, r = i % layout["cols"], i // layout["cols"]
         box = (xs[c] + (MARGIN if c else 0), ys[r] + (MARGIN if r else 0),
                xs[c + 1] - (MARGIN if c + 1 < layout["cols"] else 0), ys[r + 1] - (MARGIN if r + 1 < layout["rows"] else 0))
-        # 바깥 줄/칸은 이미지 끝까지 늘어나 있을 수 있어 칸 크기만큼만 정사각형으로 자름
-        box = (box[0], box[1], min(box[2], round(xs[c] + xstep)), min(box[3], round(ys[r] + ystep)))
+        # 칸 크기만큼만 정사각형으로 자름 (바깥 줄이 늘어난 경우, 번호 띠가 있는 경우)
+        box = (box[0], box[1], min(box[2], round(xs[c] + xstep)), min(box[3], round(ys[r] + cell_h)))
         part = img.crop(box)
         part = part.resize((round(part.width * scale), round(part.height * scale)), Image.LANCZOS)
         cell = Image.new("RGB", size, "white")
-        cell.paste(part, ((size[0] - part.width) // 2, (size[1] - part.height) // 2))
+        cell.paste(part, (round((box[0] - xs[c]) * scale), round((box[1] - ys[r]) * scale)))
         cell.save(ROOT / "frames" / layout["name"] / "redraw" / f"{k:03d}.png")
     print(f"{len(layout['frames'])}칸 -> frames/{layout['name']}/redraw/")
 
